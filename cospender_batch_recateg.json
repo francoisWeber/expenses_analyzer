@@ -1,0 +1,23 @@
+{"loc_field":"label","type":"safe_contains","target_str":"alimentation","recateg":"supermarket"}
+{"loc_field":"label","type":"safe_contains","target_str":"Lipik","recateg":"supermarket"}
+{"loc_field":"label","type":"safe_contains","target_str":"Courses","recateg":"supermarket"}
+{"loc_field":"label","type":"safe_contains","target_str":"carrefour","recateg":"supermarket"}
+{"loc_field":"label","type":"safe_contains","target_str":"naturali","recateg":"supermarket"}
+{"loc_field":"label","type":"safe_contains","target_str":"super u","recateg":"supermarket"}
+{"loc_field":"label","type":"safe_contains","target_str":"boulang","recateg":"supermarket"}
+{"loc_field":"label","type":"safe_contains","target_str":"pain","recateg":"supermarket"}
+{"loc_field":"label","type":"safe_contains","target_str":"bioco","recateg":"supermarket"}
+{"loc_field":"label","type":"safe_contains","target_str":"biosh","recateg":"supermarket"}
+{"loc_field":"label","type":"safe_contains","target_str":"spagna","recateg":"supermarket"}
+{"loc_field":"label","type":"safe_contains","target_str":"cadeau","recateg":"giftsOffered"}
+{"loc_field":"label","type":"safe_contains","target_str":"restau","recateg":"restaurantsAndBars"}
+{"loc_field":"label","type":"safe_contains","target_str":"Bubbele","recateg":"restaurantsAndBars"}
+{"loc_field":"label","type":"safe_contains","target_str":"Essence","recateg":"vehiculeGas"}
+{"loc_field":"label","type":"safe_contains","target_str":"autoroute","recateg":"travel"}
+{"loc_field":"label","type":"safe_contains","target_str":"Cin\u00e9","recateg":"goingOutCulture"}
+{"loc_field":"label","type":"safe_contains","target_str":"train","recateg":"journey"}
+{"loc_field":"label","type":"safe_contains","target_str":"d\u00e9m\u00e9na","recateg":"rent"}
+{"loc_field":"label","type":"safe_contains","target_str":"ik\u00e9a","recateg":"homeImprovement"}
+{"loc_field":"label","type":"safe_contains","target_str":"ikea","recateg":"homeImprovement"}
+{"loc_field":"label","type":"equals","target_str":"Maison","recateg":"homeImprovement"}
+{"loc_field":"label","type":"equals","target_str":"Loisirs","recateg":"restaurantsAndBars"}

@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "expense-analysis"
+version = "0.1.0"
+description = ""
+authors = ["François W <francois.weber@adevinta.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pandas = "^2.2.2"
+black = {extras = ["jupyter"], version = "^24.8.0"}
+matplotlib = "^3.9.2"
+jinja2 = "^3.1.4"
+seaborn = "^0.13.2"
+streamlit = "^1.37.1"
+watchdog = "*"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.8.0"
+ipykernel = "^6.29.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

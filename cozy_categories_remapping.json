@@ -1,0 +1,194 @@
+{
+  "savings": {
+    "mother_category": "bank",
+    "renamed_category": "savings"
+  },
+  "giftsOffered": {
+    "mother_category": "gifts",
+    "renamed_category": "offered"
+  },
+  "booksMoviesMusic": {
+    "mother_category": "culture",
+    "renamed_category": "booksMoviesMusic"
+  },
+  "friendBorrowing": {
+    "mother_category": "bank",
+    "renamed_category": "friendBorrowing"
+  },
+  "rent": {
+    "mother_category": "appartment",
+    "renamed_category": "rent"
+  },
+  "power": {
+    "mother_category": "dailyLife",
+    "renamed_category": "power"
+  },
+  "restaurantsAndBars": {
+    "mother_category": "chillOut",
+    "renamed_category": "restaurants"
+  },
+  "excludeFromBudgetCat": {
+    "mother_category": "bank",
+    "renamed_category": "excludeFromBudgetCat"
+  },
+  "goingOutEntertainment": {
+    "mother_category": "chillOut",
+    "renamed_category": "bars"
+  },
+  "supermarket": {
+    "mother_category": "dailyLife",
+    "renamed_category": "supermarket"
+  },
+  "snaksAndworkMeals": {
+    "mother_category": "pro",
+    "renamed_category": "workMeals"
+  },
+  "journey": {
+    "mother_category": "travel",
+    "renamed_category": "train"
+  },
+  "internalTransfer": {
+    "mother_category": "bank",
+    "renamed_category": "internalTransfer"
+  },
+  "parkingAndToll": {
+    "mother_category": "car",
+    "renamed_category": "parking"
+  },
+  "dailyLife": {
+    "mother_category": "dailyLife",
+    "renamed_category": "other"
+  },
+  "charity": {
+    "mother_category": "culture",
+    "renamed_category": "charity"
+  },
+  "publicTransportation": {
+    "mother_category": "transport",
+    "renamed_category": "publicTransportation"
+  },
+  "vehiculeGas": {
+    "mother_category": "car",
+    "renamed_category": "gas"
+  },
+  "tobaccoPress": {
+    "mother_category": "dailyLife",
+    "renamed_category": "newspapers"
+  },
+  "telecom": {
+    "mother_category": "dailyLife",
+    "renamed_category": "internet"
+  },
+  "travel": {
+    "mother_category": "holiday",
+    "renamed_category": "travel"
+  },
+  "homeImprovement": {
+    "mother_category": "appartment",
+    "renamed_category": "craft"
+  },
+  "goingOutCulture": {
+    "mother_category": "culture",
+    "renamed_category": "exhibitions"
+  },
+  "activityIncome": {
+    "mother_category": "income",
+    "renamed_category": "salary"
+  },
+  "activities": {
+    "mother_category": "culture",
+    "renamed_category": "exhibitions"
+  },
+  "potentialTransfer": {
+    "mother_category": "bank",
+    "renamed_category": "internalTransfer"
+  },
+  "tax": {
+    "mother_category": "bank",
+    "renamed_category": "tax"
+  },
+  "healthExpenses": {
+    "mother_category": "health",
+    "renamed_category": "healt"
+  },
+  "activityEquipments": {
+    "mother_category": "sport",
+    "renamed_category": "equipement"
+  },
+  "homeHardware": {
+    "mother_category": "appartment",
+    "renamed_category": "hardware"
+  },
+  "atm": {
+    "mother_category": "dailyLife",
+    "renamed_category": "atm"
+  },
+  "homeCharges": {
+    "mother_category": "appartment",
+    "renamed_category": "charges"
+  },
+  "vehiculeRental": {
+    "mother_category": "holiday",
+    "renamed_category": "vehiculeRental"
+  },
+  "personalCare": {
+    "mother_category": "dailyLife",
+    "renamed_category": "hairs"
+  },
+  "post": {
+    "mother_category": "dailyLife",
+    "renamed_category": "post"
+  },
+  "healthInsurance": {
+    "mother_category": "appartment",
+    "renamed_category": "insurance"
+  },
+  "homeInsurance": {
+    "mother_category": "appartment",
+    "renamed_category": "insurance"
+  },
+  "vehiculeInsurance": {
+    "mother_category": "car",
+    "renamed_category": "insurance"
+  },
+  "kids": {
+    "mother_category": "kids",
+    "renamed_category": "furnitures"
+  },
+  "pets": {
+    "mother_category": "pets",
+    "renamed_category": "furnitures"
+  },
+  "realEstateLoan": {
+    "mother_category": "appartment",
+    "renamed_category": "rent"
+  },
+  "bankFees": {
+    "mother_category": "bank",
+    "renamed_category": "fees"
+  },
+  "professionalExpenses": {
+    "mother_category": "pro",
+    "renamed_category": "professionalExpenses"
+  },
+  "vehiculeMaintenance": {
+    "mother_category": "car",
+    "renamed_category": "maintenance"
+  },
+  "additionalIncome": {
+    "mother_category": "income",
+    "renamed_category": "salary"
+  },
+  "privateParking": {
+    "mother_category": "car",
+    "renamed_category": "parking"
+  },
+  "incomeTax": {
+    "mother_category": "bank",
+    "renamed_category": "tax"
+  },
+  "electronicsAndMultimedia": {
+    "mother_category": "dailyLife",
+    "renamed_category": "electronics"
+  }
+}
