@@ -1,34 +1,85 @@
 import streamlit as st # type: ignore
 import pandas as pd
+from enum import Enum
 
 EXPENSES_DF_PATH = "expenses-full-2022-2024.csv"
 
+st.set_page_config(layout="wide")
+
 st.cache_data()
 def load_data(path: str) -> pd.DataFrame:
+    path = path.strip()
+    if path.startswith("http") and not path.endswith("download"):
+        path += "/download"
     return pd.read_csv(path, sep=";")
 
+class MyEnum(Enum):
+    @classmethod
+    def to_list(cls) -> list:
+        return [e.value for e in cls]
+
+class MotherCategory(MyEnum):
+    ALL = "ALL"
+    APPARTMENT = "appartment"
+    BANK = "bank"
+    CAR = "car"
+    CHILLOUT = "chillOut"
+    CULTURE = "culture"
+    DAILYLIFE = "dailyLife"
+    GIFTS = "gifts"
+    HEALTH = "health"
+    HOLIDAY = "holiday"
+    INCOME = "income"
+    KIDS = "kids"
+    PETS = "pets"
+    PRO = "pro"
+    SPORT = "sport"
+    TRANSPORT = "transport"
+    TRAVEL = "travel"
+    
+class AggregationType(MyEnum):
+    COUNT = "count"
+    SUM = "sum"
+    
+class SharedExpense(MyEnum):
+    YES = "yes"
+    NO = "no"
+    COMPARE = "compare"
+    
+
 def init_session_state():
-    if "ss_picked_category" not in st.session_state:
-        st.session_state.picked_category = "ALL"
+    if "picked_category" not in st.session_state:
+        st.session_state.picked_category = MotherCategory.ALL.value
         
-    if "ss_agg_type" not in st.session_state:
-        st.session_state.agg_type = "sum"
+    if "agg_type" not in st.session_state:
+        st.session_state.agg_type = AggregationType.SUM.value
+        
+    if "sharing_type" not in st.session_state:
+        st.session_state.sharing_type = SharedExpense.YES.value
+        
+    if "data_location" not in st.session_state:
+        st.session_state.data_location = None
+
+@st.dialog("Select data source")
+def ask_data_url():
+    st.write(f"Copy paste URL/Path of data to analyse")
+    data_location = st.text_input("available at:")
+    if st.button("Submit"):
+        st.session_state.data_location = data_location
+        st.rerun()
 
 def main():
-    url_of_data = st.text_input("URL of data to analyse", "local")
-    if url_of_data == "local":
-        df = load_data(EXPENSES_DF_PATH)
+    init_session_state()
+    if st.session_state.data_location is None:
+        ask_data_url()
+    
+    if st.session_state.data_location is None:
+        st.write("No data to analyse")
     else:
-        try:
-            if not url_of_data:
-                url_of_data = "empty"
-                raise ValueError()
-            if not url_of_data.endswith("download"):
-                url_of_data += "/download"
-            df = load_data(url_of_data)
-        except:
-            st.error(f"Could not load data from {url_of_data}")
-            return
+        show_analysis()
+        
+def show_analysis():
+    df = load_data(st.session_state.data_location)
     st.title(f"Expense analysis")
     
     # compute  "good" ordering of columns
@@ -41,17 +92,19 @@ def main():
     main_category_neg = df_main_category[df_main_category.real_amount <= 0].main_category.tolist()[::-1]
 
     # go ahead
-    main_categories = ["ALL"] + sorted(df.main_category.unique().tolist())
-    cc = st.columns([1, 6])
+    cc = st.columns([1, 1, 6])
     with cc[0]:
-        st.radio("Agg. type:", ["count", "sum"], key="ss_agg_type")
+        st.radio("Agg. type", AggregationType.to_list(), key="agg_type")
     with cc[1]:
-        st.radio("Pick a main category", main_categories, key="ss_picked_category", horizontal=True)
+        st.radio("Shared expenses", SharedExpense.to_list(), key="sharing_type")
+    with cc[2]:
+        st.radio("Pick a main category", MotherCategory.to_list(), key="picked_category", horizontal=True)
 
+    # df_agg = get_aggregated_data(df, st.session_state.agg_type, st.session_state.sharing_type, st.session_state.picked_category)
     pivot_index = ["year", "month"]
-    aggfunc = st.session_state.ss_agg_type
+    aggfunc = st.session_state.agg_type
     _sign = 1 if aggfunc == "count" else -1
-    if st.session_state.ss_picked_category == "ALL":
+    if st.session_state.picked_category == "ALL":
         by = "main categories"
         _df = df.copy()
         df_agg = _df.pivot_table(index=pivot_index, columns="main_category", values='real_amount', aggfunc=aggfunc).reset_index()
@@ -60,8 +113,8 @@ def main():
         pos = main_category_pos
         neg = main_category_neg
     else:
-        by = f"sub categories of {st.session_state.ss_picked_category}"
-        _df = df.copy()[df.main_category == st.session_state.ss_picked_category]
+        by = f"sub categories of {st.session_state.picked_category}"
+        _df = df.copy()[df.main_category == st.session_state.picked_category]
         df_agg = _df.pivot_table(index=pivot_index, columns="category_name", values='real_amount', aggfunc=aggfunc).reset_index()
         df_agg["year_month"] = df_agg["month"].astype(str) + " - " + df_agg["year"].astype(str)
         df_agg = df_agg.set_index("year_month", drop=True)
