@@ -52,9 +52,11 @@ class AggregationType(MyEnum):
     COUNT = "count"
     SUM = "sum"
 
+
 class ShareType(MyEnum):
     PERSONAL = "perso"
     SHARED = "share"
+
 
 class SharedExpenseAnalysis(MyEnum):
     INCLUDE = "include"
@@ -65,6 +67,7 @@ class SharedExpenseAnalysis(MyEnum):
 
 class TemporalDisplay(MyEnum):
     DAILY = "daily"
+    WEEKLY = "weekly"
     MONTHLY = "monthly"
 
 
@@ -118,7 +121,9 @@ def show_analysis():
         st.radio("Agg. type", AggregationType.to_list(), key="agg_type")
     with cc[1]:
         st.radio(
-            "Shared expenses", SharedExpenseAnalysis.to_list(), key="include_shared_expenses"
+            "Shared expenses",
+            SharedExpenseAnalysis.to_list(),
+            key="include_shared_expenses",
         )
     with cc[2]:
         st.radio("Temporal", TemporalDisplay.to_list(), key="temporal_display")
@@ -132,9 +137,7 @@ def show_analysis():
 
     aggfunc = st.session_state.agg_type
 
-    st.subheader(
-        f"Expenses by {st.session_state.picked_category} category - comparison 2022 vs 2024 for months 04-08"
-    )
+    st.subheader(f"Expenses by {st.session_state.picked_category} category - comparison 2022 vs 2024 for months 04-08")
 
     alt_chart = get_altair_chart_from_usecase(
         df.copy(),
@@ -143,10 +146,7 @@ def show_analysis():
         st.session_state.include_shared_expenses,
         st.session_state.temporal_display,
     )
-    st.altair_chart(alt_chart, use_container_width=True)
-    
-    st.write("---")
-    
+
     _df = reshape_df_from_usecase(
         df.copy(),
         aggfunc,
@@ -154,10 +154,51 @@ def show_analysis():
         st.session_state.include_shared_expenses,
         st.session_state.temporal_display,
     )
+
+    # Chart
+    st.altair_chart(alt_chart, use_container_width=True)
+
+    st.write("---")
+    # Savings/Expenses comparison
+    cols = st.columns(2)
+
+    if st.session_state.picked_category == "ALL":
+        a = _df[_df.real_amount < 0].groupby(["year", PIVOT_COL_NAME]).agg({"real_amount": "sum"})
+    else:
+        a = _df[_df.real_amount < 0].groupby(["year", PIVOT_COL_NAME]).agg({"real_amount": "sum"})
+    pivot_df = a.pivot_table(
+        index=PIVOT_COL_NAME,
+        columns="year",
+        values="real_amount",
+        aggfunc="sum",
+        fill_value=0,
+    )
+    pivot_df = a.pivot_table(
+        index=PIVOT_COL_NAME,
+        columns="year",
+        values="real_amount",
+        aggfunc="sum",
+        fill_value=0,
+    )
+    pivot_df.loc[:, "delta"] = pivot_df[2024] - pivot_df[2022]
+    pivot_df.loc[:, "delta_pct"] = pivot_df["delta"] / np.abs(pivot_df[2022]) * 100
+
+    pivot_df["color"] = np.where(pivot_df["delta"] < 0, "#eb4034", "#3496eb")
+    pivot_df = pivot_df.sort_values("delta")
+    with cols[0]:
+        st.subheader("Savings 2024 wrt 2022 in €")
+        st.bar_chart(pivot_df, y="delta", color="color")
+    with cols[1]:
+        st.subheader("Savings 2024 wrt 2022 in %")
+        st.bar_chart(pivot_df, y="delta_pct", color="color")
+
+    st.write("---")
+
     st.dataframe(
         _df[
             [
                 "date",
+                "week",
                 "bank_name",
                 "label",
                 "amount",
@@ -170,8 +211,10 @@ def show_analysis():
         ]
     )
 
-def get_y_min_max_from_usecase(
-    df, aggfunc, category, include_shared_expenses, temporal_display) -> alt.Scale:
+    st.download_button("Download as csv", a.to_csv().encode("utf-8"), "selected_data.csv")
+
+
+def get_y_min_max_from_usecase(df, aggfunc, category, include_shared_expenses, temporal_display) -> alt.Scale:
 
     if aggfunc == AggregationType.COUNT.value or category == MotherCategory.ALL.value:
         return alt.Undefined
@@ -181,25 +224,21 @@ def get_y_min_max_from_usecase(
 
     # prepare temporal granularity
     if temporal_display == TemporalDisplay.MONTHLY.value:
-        df[DISPLAY_DATE_COL_NAME] = (
-            df["month"].astype(str) + " - " + df["year"].astype(str)
-        )
+        df[DISPLAY_DATE_COL_NAME] = df["month"].astype(str) + " - " + df["year"].astype(str)
     else:
         df[DISPLAY_DATE_COL_NAME] = df["date"]
-        
+
     agg_df = df.groupby(DISPLAY_DATE_COL_NAME).agg({"real_amount": "sum"})
     y_min = agg_df["real_amount"].min()
     y_max = agg_df["real_amount"].max()
-    
+
     y_min = y_min - 0.1 * (y_max - y_min)
     y_max = y_max + 0.1 * (y_max - y_min)
-    
-    return alt.Scale(domain=[y_min, y_max])
-    
 
-def reshape_df_from_usecase(
-    df, aggfunc, category, include_shared_expenses, temporal_display
-):
+    return alt.Scale(domain=[y_min, y_max])
+
+
+def reshape_df_from_usecase(df, aggfunc, category, include_shared_expenses, temporal_display):
     pivot_col_content = []
 
     # prepare SELECT categ
@@ -211,9 +250,9 @@ def reshape_df_from_usecase(
 
     # prepare temporal granularity
     if temporal_display == TemporalDisplay.MONTHLY.value:
-        df[DISPLAY_DATE_COL_NAME] = (
-            df["month"].astype(str) + " - " + df["year"].astype(str)
-        )
+        df.loc[:, DISPLAY_DATE_COL_NAME] = df["month"].astype(str) + " - " + df["year"].astype(str)
+    elif temporal_display == TemporalDisplay.WEEKLY.value:
+        df.loc[:, DISPLAY_DATE_COL_NAME] = df["week"].astype(str) + " - " + df["year"].astype(str)
     else:
         df[DISPLAY_DATE_COL_NAME] = df["date"]
 
@@ -227,21 +266,12 @@ def reshape_df_from_usecase(
     elif SharedExpenseAnalysis.DIFFERENCIATE.value:
         pivot_col_content.append("shared")
 
-    # craft pivot column
-    df[PIVOT_COL_NAME] = (
-        df[pivot_col_content[::-1]].astype(str).apply(lambda x: "-".join(x), axis=1)
-    )
-    return df
+    # reorder
+    df = df.sort_values(["category_name"])
 
-def sort_categories_for_display(df):
-    # sort categories starting with the ones appearing in pairs
-    displayed_categories = df[PIVOT_COL_NAME].unique()
-    subcategs, counts = np.unique(["-".join(x.split("-")[-3:]) for x in displayed_categories], return_counts=True)
-    ordered_categories = []
-    for subcateg in subcategs[np.argsort(-counts)]:
-        ordered_categories += [categ for categ in displayed_categories if categ.endswith("-" + subcateg)]
-    
-    return ordered_categories
+    # craft pivot column
+    df.loc[:, PIVOT_COL_NAME] = df[pivot_col_content].astype(str).apply(lambda x: "-".join(x), axis=1)
+    return df
 
 
 def get_altair_chart_from_usecase(df, aggfunc, category, include_shared_expenses, temporal_display) -> alt.Chart:
@@ -254,13 +284,11 @@ def get_altair_chart_from_usecase(df, aggfunc, category, include_shared_expenses
         .encode(
             x=alt.X(f"{DISPLAY_DATE_COL_NAME}:O", title="Month/Year"),
             y=alt.Y(
-                f"{aggfunc}(real_amount)", 
+                f"{aggfunc}(real_amount):Q",
                 scale=scale,
             ),
-            color=PIVOT_COL_NAME, #alt.Color(PIVOT_COL_NAME, sort=sort),
-            order=PIVOT_COL_NAME, #alt.Order(PIVOT_COL_NAME, sort=sort),
-        ).properties(
-            height=500
+            color=PIVOT_COL_NAME,  # alt.Color(PIVOT_COL_NAME, sort=sort),
+            order=PIVOT_COL_NAME,  # sort, #PIVOT_COL_NAME, #alt.Order(PIVOT_COL_NAME, sort=sort),
         )
     )
     return alt_chart
