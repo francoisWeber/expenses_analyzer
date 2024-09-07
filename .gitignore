@@ -3,3 +3,4 @@
 data_*.json
 dataset-history/*
 *.pyc
+*.json
